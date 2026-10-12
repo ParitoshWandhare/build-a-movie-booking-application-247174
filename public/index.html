@@ -1,0 +1,601 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>LUMIÈRE | Modern Cinema & IMAX Booking</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body class="bg-cinema">
+  <!-- Toast Notification System -->
+  <div id="toast-container" class="toast-container"></div>
+
+  <!-- Header / Nav -->
+  <header class="app-header">
+    <div class="header-inner container">
+      <a href="#" class="brand-logo" id="nav-brand">
+        <div class="logo-icon">🎬</div>
+        <div class="logo-text">
+          <span class="brand-name">LUMIÈRE</span>
+          <span class="brand-tag">CINEMA EXPERIENCE</span>
+        </div>
+      </a>
+
+      <div class="header-search">
+        <span class="search-icon">🔍</span>
+        <input type="text" id="movie-search-input" placeholder="Search movies, genres, actors..." />
+      </div>
+
+      <nav class="nav-links">
+        <button class="nav-btn active" id="btn-nav-movies">Now Showing</button>
+        <button class="nav-btn" id="btn-nav-bookings">My Tickets</button>
+        <button class="nav-btn nav-btn-primary" id="btn-quick-book">Quick Book</button>
+      </nav>
+    </div>
+  </header>
+
+  <!-- Hero Spotlight Section -->
+  <section class="hero-section" id="hero-section">
+    <div class="hero-backdrop" id="hero-backdrop"></div>
+    <div class="hero-gradient"></div>
+    <div class="container hero-content">
+      <div class="hero-badge">PREMIERE SPOTLIGHT • 4DX & DOLBY ATMOS</div>
+      <h1 class="hero-title" id="hero-title">Cyberpunk 2099: Neon Horizon</h1>
+      <p class="hero-tagline" id="hero-tagline">The boundary between ghost and machine has fallen.</p>
+      <div class="hero-meta">
+        <span class="hero-chip rating-chip">★ 8.9 / 10</span>
+        <span class="hero-chip">Sci-Fi • Action</span>
+        <span class="hero-chip">2h 28m</span>
+        <span class="hero-chip age-chip">PG-13</span>
+      </div>
+      <div class="hero-actions">
+        <button class="btn btn-primary" id="hero-book-btn">⚡ Reserve Seats Now</button>
+        <button class="btn btn-secondary" id="hero-details-btn">View Synopsis & Cast</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- Main App Container -->
+  <main class="container app-main">
+    
+    <!-- VIEW 1: Movie Catalog View -->
+    <section id="view-catalog" class="view-section active">
+      <div class="catalog-controls">
+        <div class="genre-pills" id="genre-pills">
+          <button class="genre-pill active" data-genre="All">All Genres</button>
+          <button class="genre-pill" data-genre="Sci-Fi">Sci-Fi</button>
+          <button class="genre-pill" data-genre="Action">Action</button>
+          <button class="genre-pill" data-genre="Fantasy">Fantasy</button>
+          <button class="genre-pill" data-genre="Psychological Thriller">Thriller</button>
+          <button class="genre-pill" data-genre="Animation">Animation</button>
+          <button class="genre-pill" data-genre="Mystery">Mystery</button>
+        </div>
+
+        <div class="theater-filter-wrap">
+          <span class="filter-label">Cinema:</span>
+          <select id="theater-select" class="select-input">
+            <option value="All">All Auditoriums</option>
+            <option value="CineSphere IMAX 4DX">CineSphere IMAX 4DX</option>
+            <option value="Starlight Dolby Luxe">Starlight Dolby Luxe</option>
+            <option value="Grand Meridian Prime">Grand Meridian Prime</option>
+            <option value="Palace Cinema Royal">Palace Cinema Royal</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="section-heading-row">
+        <div>
+          <h2 class="section-title">Current Feature Lineup</h2>
+          <p class="section-sub">Select a film to browse showtimes, available seat tiers, and concessions</p>
+        </div>
+        <div id="movies-count-indicator" class="movies-count-tag">Showing 6 Titles</div>
+      </div>
+
+      <!-- Movie Cards Grid -->
+      <div class="movies-grid" id="movies-grid">
+        <!-- Rendered dynamically via JS -->
+      </div>
+    </section>
+
+    <!-- VIEW 2: Booking Flow View (Step-based) -->
+    <section id="view-booking" class="view-section hidden">
+      <!-- Breadcrumb navigation -->
+      <div class="booking-flow-header">
+        <button class="back-link-btn" id="btn-back-to-catalog">← Back to Movies</button>
+        
+        <div class="stepper-bar">
+          <div class="step-item active" data-step="1">
+            <span class="step-circle">1</span>
+            <span class="step-text">Showtime</span>
+          </div>
+          <div class="step-line"></div>
+          <div class="step-item" data-step="2">
+            <span class="step-circle">2</span>
+            <span class="step-text">Seat Selection</span>
+          </div>
+          <div class="step-line"></div>
+          <div class="step-item" data-step="3">
+            <span class="step-circle">3</span>
+            <span class="step-text">Snacks & Concessions</span>
+          </div>
+          <div class="step-line"></div>
+          <div class="step-item" data-step="4">
+            <span class="step-circle">4</span>
+            <span class="step-text">Checkout & Confirm</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Active Movie Showcase banner in checkout -->
+      <div class="selected-movie-strip" id="selected-movie-strip">
+        <img src="" id="strip-poster" class="strip-poster" alt="poster" />
+        <div class="strip-details">
+          <div class="strip-badges">
+            <span class="hero-chip" id="strip-genre">Sci-Fi</span>
+            <span class="hero-chip" id="strip-duration">2h 28m</span>
+            <span class="hero-chip age-chip" id="strip-rating">PG-13</span>
+          </div>
+          <h2 id="strip-title" class="strip-title">Movie Title</h2>
+          <p id="strip-tagline" class="strip-tagline">Movie Tagline</p>
+        </div>
+      </div>
+
+      <!-- STEP 1: Theater, Date, and Showtime Picker -->
+      <div class="step-content" id="step-content-1">
+        <h3 class="step-heading">Step 1: Choose Your Experience, Date & Showtime</h3>
+        
+        <div class="theater-date-grid">
+          <!-- Theater Selection -->
+          <div class="panel-box">
+            <h4 class="panel-title">1. Select Theater Venue</h4>
+            <div class="theater-radios" id="theaters-list-container">
+              <!-- Rendered via JS -->
+            </div>
+          </div>
+
+          <!-- Date Selection -->
+          <div class="panel-box">
+            <h4 class="panel-title">2. Select Date</h4>
+            <div class="date-scroll-list" id="date-scroll-list">
+              <!-- Dynamically populated 7 days -->
+            </div>
+          </div>
+        </div>
+
+        <!-- Showtime Selection -->
+        <div class="panel-box mt-4">
+          <h4 class="panel-title">3. Select Showtime</h4>
+          <div class="showtime-chips" id="showtimes-list-container">
+            <!-- Rendered via JS -->
+          </div>
+        </div>
+
+        <div class="flow-actions mt-4">
+          <button class="btn btn-primary" id="btn-goto-step-2">Continue to Seat Map →</button>
+        </div>
+      </div>
+
+      <!-- STEP 2: Interactive Cinema Seat Layout -->
+      <div class="step-content hidden" id="step-content-2">
+        <div class="seat-selection-layout">
+          
+          <div class="seat-screen-wrapper">
+            <div class="cinema-screen">
+              <div class="screen-curve"></div>
+              <span class="screen-label">IMAX CURVED PROJECTION SCREEN</span>
+            </div>
+
+            <!-- Seat Legend -->
+            <div class="seat-legend">
+              <div class="legend-item"><span class="legend-dot available"></span> Available</div>
+              <div class="legend-item"><span class="legend-dot selected"></span> Selected</div>
+              <div class="legend-item"><span class="legend-dot occupied"></span> Occupied</div>
+              <div class="legend-item"><span class="legend-dot vip"></span> VIP Recliner ($22.00)</div>
+              <div class="legend-item"><span class="legend-dot premium"></span> Premium Dolby ($16.00)</div>
+              <div class="legend-item"><span class="legend-dot standard"></span> Standard Luxe ($12.50)</div>
+            </div>
+
+            <!-- Seat Grid Render Container -->
+            <div class="cinema-seating-grid" id="cinema-seating-grid">
+              <!-- Seating matrix rendered dynamically via JS -->
+            </div>
+          </div>
+
+          <!-- Live Booking Summary Sidebar -->
+          <aside class="booking-sidebar">
+            <h4 class="sidebar-title">Reservation Summary</h4>
+            
+            <div class="sidebar-info-row">
+              <span class="label">Show:</span>
+              <span class="val" id="sb-movie-title">-</span>
+            </div>
+            <div class="sidebar-info-row">
+              <span class="label">Cinema:</span>
+              <span class="val" id="sb-theater">-</span>
+            </div>
+            <div class="sidebar-info-row">
+              <span class="label">Session:</span>
+              <span class="val" id="sb-session">-</span>
+            </div>
+
+            <hr class="sidebar-divider" />
+
+            <div class="sidebar-section">
+              <div class="section-label-row">
+                <span>Selected Seats (<span id="sb-seat-count">0</span>):</span>
+                <button class="btn-clear-seats" id="btn-clear-seats">Clear</button>
+              </div>
+              <div class="selected-seats-pills" id="sb-selected-seats-list">
+                <span class="empty-hint">No seats selected yet. Click on the map to choose.</span>
+              </div>
+            </div>
+
+            <div class="price-breakdown">
+              <div class="price-row">
+                <span>Seats Subtotal:</span>
+                <span id="sb-seats-subtotal">$0.00</span>
+              </div>
+              <div class="price-row">
+                <span>Online Booking Fee:</span>
+                <span>$2.50</span>
+              </div>
+              <div class="price-row total-row">
+                <span>Estimated Total:</span>
+                <span class="highlight-price" id="sb-running-total">$2.50</span>
+              </div>
+            </div>
+
+            <div class="sidebar-actions">
+              <button class="btn btn-secondary w-full mb-2" id="btn-back-to-step-1">← Change Time</button>
+              <button class="btn btn-primary w-full" id="btn-goto-step-3" disabled>Proceed to Concessions →</button>
+            </div>
+          </aside>
+        </div>
+      </div>
+
+      <!-- STEP 3: Concessions / Food & Beverages -->
+      <div class="step-content hidden" id="step-content-3">
+        <div class="concessions-header">
+          <div>
+            <h3 class="step-heading">Step 3: Enhance Your Screening with Concessions</h3>
+            <p class="concessions-sub">Artisanal popcorn, ice-cold beverages, and cinema sweet snacks</p>
+          </div>
+          <div class="snack-counter-badge">
+            <span id="snack-cart-count">0</span> Items in Snack Cart
+          </div>
+        </div>
+
+        <div class="concessions-grid" id="concessions-grid">
+          <!-- Rendered via JS -->
+        </div>
+
+        <div class="flow-actions mt-6">
+          <button class="btn btn-secondary" id="btn-back-to-step-2">← Back to Seat Selection</button>
+          <button class="btn btn-primary" id="btn-goto-step-4">Continue to Checkout →</button>
+        </div>
+      </div>
+
+      <!-- STEP 4: Checkout, Customer Details & Payment -->
+      <div class="step-content hidden" id="step-content-4">
+        <h3 class="step-heading">Step 4: Contact Details & Express Payment</h3>
+
+        <div class="checkout-grid">
+          <!-- Form Info -->
+          <div class="panel-box">
+            <h4 class="panel-title">1. Ticket Delivery & Contact Info</h4>
+            <form id="checkout-form" class="checkout-form" onsubmit="return false;">
+              <div class="form-row">
+                <div class="form-group flex-1">
+                  <label for="cust-name">Full Legal Name *</label>
+                  <input type="text" id="cust-name" required placeholder="e.g. Jordan Cooper" class="input-text" />
+                </div>
+                <div class="form-group flex-1">
+                  <label for="cust-email">Email Address (for e-ticket receipt) *</label>
+                  <input type="email" id="cust-email" required placeholder="jordan@example.com" class="input-text" />
+                </div>
+              </div>
+
+              <div class="form-row">
+                <div class="form-group flex-1">
+                  <label for="cust-phone">Mobile Phone (for SMS gate passes) *</label>
+                  <input type="tel" id="cust-phone" required placeholder="+1 (555) 000-0000" class="input-text" />
+                </div>
+                <div class="form-group flex-1">
+                  <label for="cust-age">Age Verification</label>
+                  <select id="cust-age" class="select-input">
+                    <option value="18+">18 years or older</option>
+                    <option value="13-17">13 - 17 years old</option>
+                    <option value="under13">Under 13 (with adult)</option>
+                  </select>
+                </div>
+              </div>
+
+              <h4 class="panel-title mt-6">2. Choose Payment Method</h4>
+              <div class="payment-tabs">
+                <label class="payment-option">
+                  <input type="radio" name="payment-method" value="Credit Card" checked />
+                  <div class="option-card">
+                    <span class="pay-icon">💳</span>
+                    <div>
+                      <strong>Credit / Debit Card</strong>
+                      <span class="subtext">Visa, Mastercard, Amex</span>
+                    </div>
+                  </div>
+                </label>
+
+                <label class="payment-option">
+                  <input type="radio" name="payment-method" value="Apple Pay" />
+                  <div class="option-card">
+                    <span class="pay-icon">🍎</span>
+                    <div>
+                      <strong>Apple Pay / Google Pay</strong>
+                      <span class="subtext">One-tap express touch</span>
+                    </div>
+                  </div>
+                </label>
+
+                <label class="payment-option">
+                  <input type="radio" name="payment-method" value="Lumiere Cinema Pass" />
+                  <div class="option-card">
+                    <span class="pay-icon">🎟️</span>
+                    <div>
+                      <strong>Cinema Gift Pass</strong>
+                      <span class="subtext">Member card credits</span>
+                    </div>
+                  </div>
+                </label>
+              </div>
+
+              <!-- Mock Credit Card Inputs -->
+              <div id="credit-card-fields" class="mt-4 payment-card-mock">
+                <div class="form-group">
+                  <label>Card Number</label>
+                  <input type="text" class="input-text" placeholder="4242 •••• •••• 4242" value="4242 •••• •••• 4242" />
+                </div>
+                <div class="form-row mt-3">
+                  <div class="form-group flex-1">
+                    <label>Expiration</label>
+                    <input type="text" class="input-text" placeholder="MM/YY" value="08/29" />
+                  </div>
+                  <div class="form-group flex-1">
+                    <label>CVC / CVV</label>
+                    <input type="text" class="input-text" placeholder="123" value="789" />
+                  </div>
+                </div>
+              </div>
+            </form>
+          </div>
+
+          <!-- Order Summary Final Review -->
+          <div class="panel-box order-review-box">
+            <h4 class="panel-title">Order Breakdown</h4>
+            
+            <div class="review-ticket-badge">
+              <span class="ticket-dot"></span>
+              <div>
+                <strong id="final-review-title">Movie Title</strong>
+                <div class="subtext" id="final-review-meta">Cinema • Date • Time</div>
+              </div>
+            </div>
+
+            <div class="review-seats-list" id="final-review-seats">
+              <!-- List of seats with price -->
+            </div>
+
+            <div class="review-snacks-list" id="final-review-snacks">
+              <!-- List of snacks with quantity and price -->
+            </div>
+
+            <div class="receipt-divider"></div>
+
+            <div class="receipt-line">
+              <span>Tickets Subtotal</span>
+              <span id="final-seats-cost">$0.00</span>
+            </div>
+            <div class="receipt-line">
+              <span>Snacks & Concessions</span>
+              <span id="final-snacks-cost">$0.00</span>
+            </div>
+            <div class="receipt-line">
+              <span>Online Convenience Fee</span>
+              <span>$2.50</span>
+            </div>
+            <div class="receipt-line">
+              <span>Estimated Sales Tax (8.25%)</span>
+              <span id="final-tax-cost">$0.00</span>
+            </div>
+            <div class="receipt-divider"></div>
+            <div class="receipt-line total-highlight">
+              <span>Grand Total</span>
+              <span id="final-total-cost">$0.00</span>
+            </div>
+
+            <button class="btn btn-primary w-full mt-6 pulse-btn" id="btn-confirm-purchase">
+              🔒 Confirm & Complete Reservation
+            </button>
+            <button class="btn btn-secondary w-full mt-2" id="btn-back-to-step-3">
+              ← Edit Concessions
+            </button>
+          </div>
+        </div>
+      </div>
+
+    </section>
+
+    <!-- VIEW 3: Confirmation Ticket Pass View -->
+    <section id="view-confirmation" class="view-section hidden">
+      <div class="confirmation-container">
+        <div class="success-banner">
+          <div class="checkmark-circle">✓</div>
+          <h2>Booking Confirmed!</h2>
+          <p>Your digital e-tickets are ready. A confirmation email has been dispatched.</p>
+        </div>
+
+        <!-- Cinema Pass Boarding Pass Card -->
+        <div class="boarding-pass-card" id="boarding-pass">
+          <div class="pass-left">
+            <div class="pass-header">
+              <div class="pass-brand">LUMIÈRE CINEMA TICKET PASS</div>
+              <div class="pass-id" id="pass-id">BKG-994821</div>
+            </div>
+            <h2 class="pass-movie" id="pass-movie-title">Movie Title</h2>
+            <div class="pass-tagline" id="pass-tagline">Movie Tagline</div>
+
+            <div class="pass-grid">
+              <div class="pass-item">
+                <span class="pass-lbl">AUDITORIUM</span>
+                <span class="pass-val" id="pass-theater">CineSphere IMAX 4DX</span>
+              </div>
+              <div class="pass-item">
+                <span class="pass-lbl">DATE</span>
+                <span class="pass-val" id="pass-date">Oct 14, 2026</span>
+              </div>
+              <div class="pass-item">
+                <span class="pass-lbl">TIME</span>
+                <span class="pass-val" id="pass-time">06:15 PM</span>
+              </div>
+              <div class="pass-item">
+                <span class="pass-lbl">SEATS</span>
+                <span class="pass-val badge-seats" id="pass-seats">E-5, E-6</span>
+              </div>
+            </div>
+
+            <div class="pass-snacks-row" id="pass-snacks-row">
+              <span class="pass-lbl">PRE-ORDERED CONCESSIONS:</span>
+              <span class="pass-val text-sm" id="pass-snacks">None</span>
+            </div>
+
+            <div class="pass-holder">
+              <span class="pass-lbl">TICKET HOLDER:</span>
+              <span class="pass-val" id="pass-holder-name">Jordan Cooper (jordan@example.com)</span>
+            </div>
+          </div>
+
+          <div class="pass-divider-line">
+            <div class="notch notch-top"></div>
+            <div class="dashed-line"></div>
+            <div class="notch notch-bottom"></div>
+          </div>
+
+          <div class="pass-right">
+            <div class="pass-qr-box">
+              <div class="qr-mock" id="pass-qr-mock">
+                <!-- SVG QR Code -->
+                <svg width="120" height="120" viewBox="0 0 120 120">
+                  <rect width="120" height="120" fill="#ffffff" rx="8" />
+                  <rect x="10" y="10" width="30" height="30" fill="#0f172a" />
+                  <rect x="15" y="15" width="20" height="20" fill="#ffffff" />
+                  <rect x="20" y="20" width="10" height="10" fill="#0f172a" />
+                  <rect x="80" y="10" width="30" height="30" fill="#0f172a" />
+                  <rect x="85" y="15" width="20" height="20" fill="#ffffff" />
+                  <rect x="90" y="20" width="10" height="10" fill="#0f172a" />
+                  <rect x="10" y="80" width="30" height="30" fill="#0f172a" />
+                  <rect x="15" y="85" width="20" height="20" fill="#ffffff" />
+                  <rect x="20" y="90" width="10" height="10" fill="#0f172a" />
+                  <circle cx="60" cy="60" r="12" fill="#ef4444" />
+                  <rect x="50" y="20" width="6" height="25" fill="#0f172a" />
+                  <rect x="65" y="25" width="6" height="20" fill="#0f172a" />
+                  <rect x="20" y="55" width="20" height="6" fill="#0f172a" />
+                  <rect x="80" y="55" width="30" height="6" fill="#0f172a" />
+                  <rect x="50" y="85" width="20" height="25" fill="#0f172a" />
+                  <rect x="80" y="85" width="25" height="10" fill="#0f172a" />
+                </svg>
+              </div>
+              <div class="qr-code-text" id="pass-qr-code-label">BKG-994821</div>
+              <span class="qr-hint">Scan at Usher Turnstile</span>
+            </div>
+            <div class="pass-total-paid">
+              <span>PAID TOTAL</span>
+              <strong id="pass-total-paid">$38.88</strong>
+            </div>
+          </div>
+        </div>
+
+        <div class="confirmation-actions">
+          <button class="btn btn-primary" onclick="window.print()">🖨️ Print / Save PDF Ticket</button>
+          <button class="btn btn-secondary" id="btn-view-all-bookings">View All My Tickets</button>
+          <button class="btn btn-secondary" id="btn-back-home">Browse More Movies</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- VIEW 4: My Tickets & Reservations List -->
+    <section id="view-my-tickets" class="view-section hidden">
+      <div class="section-heading-row">
+        <div>
+          <h2 class="section-title">My Booked Passes & History</h2>
+          <p class="section-sub">Manage your reservations, view digital gate passes, or cancel tickets</p>
+        </div>
+        <div class="tickets-search-wrap">
+          <input type="text" id="ticket-search-input" placeholder="Search by Booking ID or Email..." class="input-text" />
+        </div>
+      </div>
+
+      <div class="bookings-list" id="bookings-list-container">
+        <!-- Rendered dynamically -->
+      </div>
+    </section>
+
+  </main>
+
+  <!-- Movie Detail Modal -->
+  <div class="modal-backdrop hidden" id="movie-modal">
+    <div class="modal-card">
+      <button class="modal-close-btn" id="modal-close-btn">&times;</button>
+      <div class="modal-banner" id="modal-banner"></div>
+      <div class="modal-body">
+        <div class="modal-header-meta">
+          <span class="hero-chip rating-chip" id="modal-rating">★ 8.9</span>
+          <span class="hero-chip" id="modal-duration">2h 28m</span>
+          <span class="hero-chip age-chip" id="modal-age">PG-13</span>
+        </div>
+        <h2 class="modal-title" id="modal-title">Cyberpunk 2099</h2>
+        <p class="modal-tagline" id="modal-tagline">The boundary between ghost and machine</p>
+        
+        <p class="modal-synopsis" id="modal-synopsis">Synopsis description...</p>
+        
+        <div class="modal-grid-details">
+          <div>
+            <strong>Director:</strong>
+            <span id="modal-director">Elena Vance</span>
+          </div>
+          <div>
+            <strong>Cast:</strong>
+            <span id="modal-cast">Kian Gallagher, Aria Song</span>
+          </div>
+          <div>
+            <strong>Theaters:</strong>
+            <span id="modal-theaters">IMAX 4DX, Dolby Luxe</span>
+          </div>
+          <div>
+            <strong>Available Showtimes:</strong>
+            <span id="modal-showtimes">11:30 AM, 02:45 PM</span>
+          </div>
+        </div>
+
+        <div class="modal-actions">
+          <button class="btn btn-primary" id="modal-book-now">⚡ Select Show & Book Seats</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <footer class="app-footer">
+    <div class="container footer-content">
+      <div class="footer-brand">
+        <strong>🎬 LUMIÈRE CINEMAS ENTERTAINMENT GROUP</strong>
+        <p>Premium 4DX, IMAX Laser, and Dolby Atmos Cinematic Experiences.</p>
+      </div>
+      <div class="footer-links">
+        <span>© 2026 Lumière Cinema. All Rights Reserved.</span>
+        <span>Secure 256-bit TLS Booking Encryption</span>
+      </div>
+    </div>
+  </footer>
+
+  <script src="js/app.js"></script>
+</body>
+</html>
